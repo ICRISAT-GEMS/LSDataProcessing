@@ -77,6 +77,8 @@ median_data_computation <- function(input, meta, new_format = TRUE, row_wise = T
 
   ### median calculation
 
+  # try to use the package data.table
+
   # exp.data.ad <- exp.data.ad %>% group_by(Sector, timestamp) %>%
   #   dplyr::summarise(across(c(6:13), function(x) median(x, na.rm = TRUE)))
 
