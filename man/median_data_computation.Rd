@@ -5,17 +5,23 @@
 \title{median_data_computation}
 \usage{
 median_data_computation(
-  input,
-  meta,
+  data = NULL,
+  meta_data = NULL,
+  input_file = NULL,
+  meta_file = NULL,
   new_format = TRUE,
   row_wise = TRUE,
   output
 )
 }
 \arguments{
-\item{input}{input file (.csv)}
+\item{data}{plant eye data with specific column and column names required.}
 
-\item{meta}{metafile}
+\item{meta_data}{meta data.}
+
+\item{input_file}{path to the input plant eye data (.csv)}
+
+\item{meta_file}{path to the meta data (.csv)}
 
 \item{new_format}{Logical value specifying if new format. Default = TRUE.}
 
@@ -28,4 +34,21 @@ list containing input data, meta data, median calculated from the traits.
 }
 \description{
 Median calculation
+}
+\examples{
+
+library(plyr)
+data("pe_data")
+data("meta_data")
+
+\dontrun{
+
+# specify output directory
+out_dir <- c()
+
+test_median <- median_data_computation(data = pe_data, meta_data = meta_data,
+output = out_dir)
+
+}
+
 }

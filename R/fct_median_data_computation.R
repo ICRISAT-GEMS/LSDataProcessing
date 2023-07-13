@@ -2,9 +2,13 @@
 #'
 #' @description Median calculation
 #'
-#' @param input input file (.csv)
+#' @param data plant eye data with specific column and column names required.
 #'
-#' @param meta metafile
+#' @param meta_data meta data.
+#'
+#' @param input_file path to the input plant eye data (.csv)
+#'
+#' @param meta_file path to the meta data (.csv)
 #'
 #' @param new_format Logical value specifying if new format. Default = TRUE.
 #'
@@ -14,16 +18,83 @@
 #'
 #' @return list containing input data, meta data, median calculated from the traits.
 #'
+#' @examples
+#'
+#' library(plyr)
+#' data("pe_data")
+#' data("meta_data")
+#'
+#' \dontrun{
+#'
+#' # specify output directory
+#' out_dir <- c()
+#'
+#' test_median <- median_data_computation(data = pe_data, meta_data = meta_data,
+#' output = out_dir)
+#'
+#' }
+#'
+#' @import DescTools
+# #' @import plyr
+#' @import dplyr
+#' @import sqldf
+#' @import stringr
+#' @importFrom maditr dcast
+#'
 #' @export
 
-median_data_computation <- function(input, meta, new_format = TRUE, row_wise = TRUE, output){
+median_data_computation <- function(data = NULL, meta_data = NULL,
+                                    input_file = NULL, meta_file = NULL,
+                                    new_format = TRUE, row_wise = TRUE, output){
 
-  exp.data <- read.csv(input, check.names = FALSE)
+  ##### 1. Load and pre process exp data ----
 
-  # modify the names of the columns to improve manipulation remove units
-  # the units can be added back at the end in a more general format
+  if(is.null(data) & is.null(input_file)){
 
-  colnames(exp.data) <- mdf_planteye_colnames(colnames(exp.data))
+    stop("You must provide information .one of data or input_file.")
+
+  }
+
+  if(!is.null(data) & !is.null(input_file)){
+
+    stop("You must provide information only one of data or input_file.")
+
+  }
+
+  if(!is.null(data)){
+
+    # check that the data contains the expected columns
+    ref_var <- c("unit", "genotype", "g_alias", "treatment", "timestamp",
+                 "Digital_biomass", "Height", "Leaf_angle",
+                 "Leaf_area", "Leaf_area_index",
+                 "Leaf_area_projected", "Leaf_inclination",
+                 "Light_penetration_depth")
+
+    test <- ref_var %in% colnames(data)
+
+    if(any(!test)){
+
+      miss_c_nm <- ref_var[!test]
+      err_mess <- paste0("The following columns are missing or misspecified: ",
+                         paste(miss_c_nm, sep = ", "))
+      stop(err_mess)
+
+    }
+
+    exp.data <- data
+    rm(data)
+
+
+  } else {
+
+    exp.data <- read.csv(input_file, check.names = FALSE)
+
+    # modify the names of the columns to improve manipulation remove units
+    # the units can be added back at the end in a more general format
+
+    colnames(exp.data) <- mdf_planteye_colnames(colnames(exp.data))
+
+  }
 
   # subset requested columns
 
@@ -34,15 +105,37 @@ median_data_computation <- function(input, meta, new_format = TRUE, row_wise = T
            Leaf_area_projected, Leaf_inclination,
            Light_penetration_depth)
 
-  if(tools::file_ext(meta) == "csv")
-  {
-    md <- read.csv(meta)
-  }else{
-    sheetnames = excel_sheets(meta)
-    cat(sprintf("the sheetnames are: %s\n", sheetnames))
-    sh = readline("Enter sheet name:");
-    r = readline("Enter range:")
-    md <- read_excel(meta, sheet = sh, range = r);
+  ##### 2. Load and pre process meta data ----
+
+  if(is.null(meta_data) & is.null(meta_file)){
+
+    stop("You must provide information .one of meta_data or meta_file.")
+
+  }
+
+  if(!is.null(meta_data) & !is.null(meta_file)){
+
+    stop("You must provide information only one of meta_data or meta_file.")
+
+  }
+
+  if(!is.null(meta_data)){
+
+    md <- meta_data
+
+  } else {
+
+    if(tools::file_ext(meta_file) == "csv")
+    {
+      md <- read.csv(meta_file)
+    }else{
+      sheetnames = excel_sheets(meta_file)
+      cat(sprintf("the sheetnames are: %s\n", sheetnames))
+      sh = readline("Enter sheet name:");
+      r = readline("Enter range:")
+      md <- read_excel(meta_file, sheet = sh, range = r);
+    }
+
   }
 
   if (new_format)

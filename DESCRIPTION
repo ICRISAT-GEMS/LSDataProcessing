@@ -12,3 +12,13 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 URL: https://github.com/ICRISAT-GEMS/LSDataProcessing
 BugReports: https://github.com/ICRISAT-GEMS/LSDataProcessing/issues
+Imports: 
+    DescTools,
+    dplyr,
+    maditr,
+    plyr,
+    sqldf,
+    stringr
+Depends: 
+    R (>= 2.10)
+LazyData: true
