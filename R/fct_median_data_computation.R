@@ -43,6 +43,10 @@
 #'
 #' @export
 
+
+# @import lubridate
+# @import chron
+# @import tis
 median_data_computation <- function(data = NULL, meta_data = NULL,
                                     input_file = NULL, meta_file = NULL,
                                     new_format = TRUE, row_wise = TRUE, output){
@@ -94,6 +98,11 @@ median_data_computation <- function(data = NULL, meta_data = NULL,
 
     colnames(exp.data) <- mdf_planteye_colnames(colnames(exp.data))
 
+  }
+
+  if (IsDate(exp.data$timestamp[1]))
+  {
+    exp.data$timestamp<-POSIXct(strptime(exp.data$timestamp, "%Y-%m-%d"))
   }
 
   # subset requested columns
@@ -154,11 +163,6 @@ median_data_computation <- function(data = NULL, meta_data = NULL,
 
     names(exp.data.ad)[1]<-paste("Sector")
     exp.data.ad[exp.data.ad == 0] <- NA
-
-    if (IsDate(exp.data$timestamp[1]))
-    {
-      exp.data.ad$timestamp<-POSIXct(strptime(exp.data.ad$timestamp, "%Y-%m-%d"))
-    }
 
     exp.data.meta=exp.data.ad[,c(1:4)]
     exp.data.meta<-unique(exp.data.meta)
