@@ -35,7 +35,6 @@
 #' }
 #'
 #' @import DescTools
-# #' @import plyr
 #' @import dplyr
 #' @import sqldf
 #' @import stringr
@@ -44,9 +43,7 @@
 #' @export
 
 
-# @import lubridate
-# @import chron
-# @import tis
+
 median_data_computation <- function(data = NULL, meta_data = NULL,
                                     input_file = NULL, meta_file = NULL,
                                     new_format = TRUE, row_wise = TRUE, output){
