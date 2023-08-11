@@ -93,13 +93,15 @@ median_data_computation <- function(data = NULL, meta_data = NULL,
     # modify the names of the columns to improve manipulation remove units
     # the units can be added back at the end in a more general format
 
+
     colnames(exp.data) <- mdf_planteye_colnames(colnames(exp.data))
 
   }
 
+#
   if (IsDate(exp.data$timestamp[1]))
   {
-    exp.data$timestamp<-POSIXct(strptime(exp.data$timestamp, "%Y-%m-%d"))
+    exp.data$timestamp<-as.POSIXct(strptime(exp.data$timestamp, "%Y-%m-%d"))
   }
 
   # subset requested columns
