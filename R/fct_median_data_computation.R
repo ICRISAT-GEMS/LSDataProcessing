@@ -4,7 +4,7 @@
 #'
 #' @param data plant eye data with specific column and column names required.
 #'
-#' @param meta_data meta data.
+#' @param meta_data meta data file
 #'
 #' @param input_file path to the input plant eye data (.csv)
 #'
